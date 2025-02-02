@@ -1,0 +1,35 @@
+
+CHATAPP
+    frontend/
+    │── public/             # Static assets
+    │── src/
+    │   ├── assets/         # Images, icons, styles
+    │   ├── components/     # Reusable UI components
+    │   ├── pages/          # Page components (Home, Chat, Login)
+    │   ├── hooks/          # Custom React hooks
+    │   ├── context/        # Context API for global state management
+    │   ├── services/       # API calls using Axios
+    │   ├── App.jsx         # Main App Component
+    │   ├── main.jsx        # Entry file
+    │── tailwind.config.js  # Tailwind configuration
+    │── index.html          # Main HTML file
+    │── package.json        # Project metadata
+    │── vite.config.js      # Vite configuration
+
+
+    backend/
+    │── node_modules/       # Dependencies
+    │── config/
+    │   ├── database.js     # Database connection
+    │── models/             # Sequelize models
+    │   ├── User.js         # User model
+    │── routes/             # Express routes
+    │   ├── authRoutes.js   # Authentication routes
+    │   ├── chatRoutes.js   # Chat API routes
+    │── controllers/        # Business logic
+    │   ├── authController.js
+    │   ├── chatController.js
+    │── middleware/         # Middleware (e.g., auth validation)
+    │── .env                # Environment variables
+    │── index.js            # Main server file
+    │── package.json        # Project metadata
