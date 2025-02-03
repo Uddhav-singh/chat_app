@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -26,9 +27,11 @@ const Login = () => {
       
       // Store JWT token in localStorage
       localStorage.setItem("token", response.data.token);
+      // setIsLoggedIn(true); // Update state to remove links from header
 
       alert("Login successful!");
-      navigate("/dashboard"); // Redirect to a protected page (replace with your route)
+      navigate("/chat"); // Redirect to Chat.jsx
+      // navigate("/dashboard"); // Redirect to a protected page (replace with your route)
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Login failed");
     }
@@ -72,3 +75,5 @@ const Login = () => {
 };
 
 export default Login;
+
+
