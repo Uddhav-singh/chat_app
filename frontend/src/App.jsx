@@ -1,10 +1,20 @@
 // import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext"; // Import AuthContext
 import Header from "./components/Header";
 import "./App.css";
 import Signup from "./pages/SignUp";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
+
+
+const ProtectedRoute = ({ element }) => {
+  const { user, loading } = useAuth();
+
+   if (loading) return <div>Loading...</div>; // Show loading until auth is ready
+  
+  return user ? element : <Navigate to="/login" />;
+};
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -14,9 +24,11 @@ function App() {
       {/* Include Header Component */}
       <Header />
       <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/chat" element={<Chat />} />
+        {/* <Route path="/chat" element={<Chat />} /> */}
+        <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
       </Routes>
       {/* <SignUp /> */}
 

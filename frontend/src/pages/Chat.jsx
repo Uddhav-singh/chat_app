@@ -1,64 +1,106 @@
-// const Chat = () => {
-//     return (
-//       <div className="flex justify-center items-center h-screen">
-//         <h2 className="text-3xl font-bold">Welcome to Chat Page</h2>
-//       </div>
-//     );
-//   };
-  
-//   export default Chat;
-  
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const Chat = () => {
-  const [message, setMessage] = useState(""); // Store the message input
-  const [messages, setMessages] = useState([]); // Store the chat messages
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const { user } = useAuth(); // Access/get user from AuthContext
+  const navigate = useNavigate();
 
-  // Handle message input change
-  const handleChange = (e) => {
-    setMessage(e.target.value);
-  };
+  useEffect(() => {
+    if (!user) {
+      // Redirect to login if not authenticated
+      navigate("/login");
+      return;
+    }
 
-  // Handle sending message
-  const handleSend = () => {
-    if (message.trim() === "") return; // Prevent empty messages
+    // Load existing messages from localStorage
+    // const savedMessages = JSON.parse(localStorage.getItem("messages")) || [];
+    // setMessages(savedMessages);
 
-    // Add the new message to chat
-    setMessages([...messages, { text: message, sender: "You" }]);
-    
-    // Clear input field after sending
+
+    //   const handleStorage = (e) => {
+    //     if (e.key === "messages") {
+    //       const updatedMessages = JSON.parse(e.newValue);
+    //       setMessages(updatedMessages);
+    //     }
+    //   };
+
+    //   window.addEventListener("storage", handleStorage);
+    //   return () => window.removeEventListener("storage", handleStorage);
+    // }, [user, navigate]);
+
+    // Fetch messages from the backend on load
+    const fetchMessages = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/chat/getMessages");
+        setMessages(res.data);
+      } catch (error) {
+        console.error("Failed to load messages:", error);
+      }
+    };
+
+    fetchMessages();
+  }, [user, navigate]);
+
+  const handleSendMessage = async () => {
+    if (message.trim() === "") return;
+
+    const newMessage = {
+      user: user?.email || "Guest", // Show email from token
+      content: message,
+      timestamp: new Date().toISOString(),
+    };
+
+    // 1. Update local UI
+    const updatedMessages = [...messages, newMessage];
+    localStorage.setItem("messages", JSON.stringify(updatedMessages));
+    setMessages(updatedMessages);
     setMessage("");
+
+
+    //2. Send message to backend
+    try {
+      await axios.post('http://localhost:5000/api/chat/send', {
+        user: newMessage.user,
+        content: newMessage.content,
+      })
+
+      console.log("Message sent to server:", newMessage);
+    } catch (error) {
+      console.error("Failed to send message to server:", error);
+    }
+
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      {/* Chat Header */}
-      <header className="bg-green-600 text-white p-4 text-center text-xl font-bold">
-        Chat Room
-      </header>
+    <div className="chat-container p-4 max-w-xl mx-auto">
+      <h2 className="text-xl font-semibold mb-4">Welcome, {user?.email}!</h2>
 
-      {/* Chat Messages */}
-      <div className="flex-1 p-4 overflow-auto">
+      <div className="messages-container border p-3 h-80 overflow-y-scroll bg-gray-100 rounded mb-4">
         {messages.map((msg, index) => (
           <div key={index} className="mb-2">
-            <strong>{msg.sender}: </strong>
-            <span>{msg.text}</span>
+            <strong>{msg.user}</strong>: {msg.content}
+            <span className="text-sm text-gray-500 ml-2">
+              ({new Date(msg.timestamp).toLocaleTimeString()})
+            </span>
           </div>
         ))}
       </div>
 
-      {/* Message Input Box */}
-      <div className="p-4 bg-white flex items-center border-t">
+      <div className="input-container flex gap-2">
         <input
           type="text"
           value={message}
-          onChange={handleChange}
+          onChange={(e) => setMessage(e.target.value)}
+          className="flex-1 border px-3 py-2 rounded-lg focus:outline-none"
           placeholder="Type a message..."
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          onClick={handleSend}
-          className="ml-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          onClick={handleSendMessage}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
           Send
         </button>
@@ -68,3 +110,6 @@ const Chat = () => {
 };
 
 export default Chat;
+
+
+
