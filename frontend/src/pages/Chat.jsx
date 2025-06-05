@@ -9,12 +9,22 @@ const Chat = () => {
   const { user } = useAuth(); // Access/get user from AuthContext
   const navigate = useNavigate();
 
+
   useEffect(() => {
     if (!user) {
       // Redirect to login if not authenticated
       navigate("/login");
       return;
     }
+
+    fetchMessages(); //initially fetch messages
+
+    const interval = setInterval(() => {
+      fetchMessages(); // Fetch messages every 5 seconds
+    }, 1000); // Adjust the interval as needed here implementing 1 second interval for demo purposes
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [user, navigate]);
 
     // Load existing messages from localStorage
     // const savedMessages = JSON.parse(localStorage.getItem("messages")) || [];
@@ -42,8 +52,8 @@ const Chat = () => {
       }
     };
 
-    fetchMessages();
-  }, [user, navigate]);
+  //   fetchMessages();
+  // }, [user, navigate]);
 
   const handleSendMessage = async () => {
     if (message.trim() === "") return;
@@ -55,10 +65,10 @@ const Chat = () => {
     };
 
     // 1. Update local UI
-    const updatedMessages = [...messages, newMessage];
-    localStorage.setItem("messages", JSON.stringify(updatedMessages));
-    setMessages(updatedMessages);
-    setMessage("");
+    // const updatedMessages = [...messages, newMessage];
+    // localStorage.setItem("messages", JSON.stringify(updatedMessages));
+    // setMessages(updatedMessages);
+    // setMessage("");
 
 
     //2. Send message to backend
