@@ -1,47 +1,3 @@
-// const Sequelize = require('sequelize');
-// const sequelize = require('../config/database');
-// const User = require('./user');
-// const Message = sequelize.define(
-//     'message',
-//     {
-//         id: {
-//             type: Sequelize.INTEGER,
-//             allowNull: false,
-//             autoIncrement: true,
-//             primaryKey: true
-//         },
-//         content: {
-//             type: Sequelize.TEXT,
-//             allowNull: false
-//         },
-//         senderId: {
-//             type: Sequelize.INTEGER,
-//             allowNull: false,
-//             references: {
-//                 model: User,
-//                 key: 'id'
-//             }
-//         },
-//         receiverId: {
-//             type: Sequelize.INTEGER,
-//             allowNull: false,
-//             references: {
-//                 model: User,
-//                 key: 'id'
-//             }
-//         }
-//     },
-//     {
-//         tableName: "messages",
-//         timestamps: true, // This is enabled by default
-//     }
-// );
-
-// module.exports = Message;
-// // This code defines a Sequelize model for messages in a chat application.
-
-
-// const { DataTypes } = require("sequelize");
 const Sequelize = require('sequelize');
 const sequelize = require('../config/databse');
 
@@ -58,6 +14,14 @@ const Message = sequelize.define("Message", {
     type: Sequelize.DATE,
     defaultValue: Sequelize.NOW,
   },
-});
+   groupId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  }
+},{
+  tableName: "messages",
+  timestamps: true, // Automatically adds createdAt and updatedAt fields
+}
+);
 
 module.exports = Message;
