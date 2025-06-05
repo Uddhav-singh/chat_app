@@ -10,6 +10,7 @@ const Chat = () => {
   const navigate = useNavigate();
 
 
+   // Load messages from localStorage on first render
   useEffect(() => {
     if (!user) {
       // Redirect to login if not authenticated
@@ -17,10 +18,13 @@ const Chat = () => {
       return;
     }
 
-    fetchMessages(); //initially fetch messages
+    const savedMessages = JSON.parse(localStorage.getItem("messages")) || [];
+    setMessages(savedMessages);
+
+    //fetchMessages(); //initially fetch messages
 
     const interval = setInterval(() => {
-      fetchMessages(); // Fetch messages every 5 seconds
+      fetchMessages(savedMessages); // Fetch messages every 5 seconds
     }, 1000); // Adjust the interval as needed here implementing 1 second interval for demo purposes
 
     return () => clearInterval(interval); // Cleanup interval on unmount
@@ -45,10 +49,17 @@ const Chat = () => {
     // Fetch messages from the backend on load
     const fetchMessages = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/chat/getMessages");
-        setMessages(res.data);
+        const res = await axios.get("http://localhost:5000/api/chat/getMessages", {
+        params: { after: lastTimestamp },
+      });
+        // setMessages(res.data);
+        if (res.data && res.data.length > 0) {
+        const newMessages = [...localMessages, ...res.data].slice(-10); // keep last 10
+        setMessages(newMessages);
+        localStorage.setItem("messages", JSON.stringify(newMessages));
+        }
       } catch (error) {
-        console.error("Failed to load messages:", error);
+        console.error("Failed to load new messages:", error);
       }
     };
 
@@ -58,11 +69,28 @@ const Chat = () => {
   const handleSendMessage = async () => {
     if (message.trim() === "") return;
 
-    const newMessage = {
-      user: user?.email || "Guest", // Show email from token
-      content: message,
-      timestamp: new Date().toISOString(),
-    };
+     try {
+      const res = await axios.post("http://localhost:5000/api/chat/send", {
+        user: user?.email || "Guest",
+        content: message,
+      });
+
+      const newMessage = res.data.data;
+
+      // Append to UI & localStorage
+      const updatedMessages = [...messages, newMessage].slice(-10); // last 10 messages
+      setMessages(updatedMessages);
+      localStorage.setItem("messages", JSON.stringify(updatedMessages));
+      setMessage("");
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
+
+    // const newMessage = {
+    //   user: user?.email || "Guest", // Show email from token
+    //   content: message,
+    //   timestamp: new Date().toISOString(),
+    // };
 
     // 1. Update local UI
     // const updatedMessages = [...messages, newMessage];
@@ -72,16 +100,16 @@ const Chat = () => {
 
 
     //2. Send message to backend
-    try {
-      await axios.post('http://localhost:5000/api/chat/send', {
-        user: newMessage.user,
-        content: newMessage.content,
-      })
+    // try {
+    //   await axios.post('http://localhost:5000/api/chat/send', {
+    //     user: newMessage.user,
+    //     content: newMessage.content,
+    //   })
 
-      console.log("Message sent to server:", newMessage);
-    } catch (error) {
-      console.error("Failed to send message to server:", error);
-    }
+    //   console.log("Message sent to server:", newMessage);
+    // } catch (error) {
+    //   console.error("Failed to send message to server:", error);
+    // }
 
   };
 

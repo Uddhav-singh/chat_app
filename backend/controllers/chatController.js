@@ -1,4 +1,11 @@
 const Message = require("../models/messages");
+const { all } = require("../routes/chatRoute");
+const { Op } = require("sequelize"); //Op stands for Sequelize Operators. It provides special symbols like 
+// Op.gt → Greater than
+// Op.lt → Less than
+
+
+
 
 const sendMessage = async (req, res) => {
   try {
@@ -21,14 +28,35 @@ const sendMessage = async (req, res) => {
 };
 
 const getMessages = async (req, res) => {
-    try{
+  // older code to fetch all the messages 
+//     try{
+//     const messages = await Message.findAll({
+//         order: [['createdAt', 'ASC']],
+//     });
+//     res.json(messages);
+//     } catch (err) {
+//     console.error("Error fetching messages:", err);
+// };
+ 
+
+try {
+    const { after } = req.query;
+
+    const whereClause = after
+      ? { createdAt: { [Op.gt]: new Date(after) } }
+      : {};
+
     const messages = await Message.findAll({
-        order: [['createdAt', 'ASC']],
+      where: whereClause,
+      order: [['createdAt', 'ASC']],
     });
+
     res.json(messages);
-    } catch (err) {
+  } catch (err) {
     console.error("Error fetching messages:", err);
-};
+    res.status(500).json({ error: "Internal server error" });
+  }
+
 }
 
 module.exports = {
