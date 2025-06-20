@@ -7,7 +7,11 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 // Routes
 router.post('/create', authMiddleware, groupController.createGroup);  // Creating a new group
-router.get('/userGroups', authMiddleware, groupController.getUserGroups);  // Get all groups user is part of
+router.get('/user', authMiddleware, groupController.getUserGroups);  // Get all groups user is part of
+
+
+// Route: GET /api/group/users
+router.get('/users', authMiddleware, groupController.getAllUsers);
 
 module.exports = router;
 // This code sets up the group routes for creating a group and fetching user groups.

@@ -6,6 +6,7 @@ import "./App.css";
 import Signup from "./pages/SignUp";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
+import CreateGroupModal from "./pages/CreateGroupModal";
 
 
 const ProtectedRoute = ({ element }) => {
@@ -29,6 +30,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         {/* <Route path="/chat" element={<Chat />} /> */}
         <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
+        <Route path="/create-group" element={<ProtectedRoute element={<CreateGroupModal />} />} />
+        {/* Add more routes as needed */}
       </Routes>
       {/* <SignUp /> */}
 

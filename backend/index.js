@@ -36,7 +36,7 @@ app.use('/api/auth', logInRoute);
 app.use('/api/chat', chatRoute);
 
 // Add group routes
-app.use('/api/groups', groupRoute);  // For group-related operations
+app.use('/api/group', groupRoute);  // For group-related operations
 
 
 
