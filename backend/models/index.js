@@ -6,8 +6,7 @@ const Message = require('./messages');
 
 // Associations
 
-// Group belongs to creator
-Group.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+
 
 Group.belongsToMany(User, {
   through: GroupMember,
@@ -24,7 +23,20 @@ User.belongsToMany(Group, {
 });
 
 // For messages
+//Message.belongsTo(User, { foreignKey: 'user', targetKey: 'email' }); // only if 'user' stores email
 Message.belongsTo(Group, { foreignKey: 'groupId' });
+
+// ✅ Add this association (for eager loading to work in getGroupMembers)
+GroupMember.belongsTo(User, {
+  foreignKey: 'userId',
+});
+User.hasMany(GroupMember, {
+  foreignKey: 'userId',
+});
+
+// Group belongs to creator
+Group.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+
 
 module.exports = {
   User,

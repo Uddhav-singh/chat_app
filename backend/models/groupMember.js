@@ -14,8 +14,13 @@ const GroupUser = sequelize.define('GroupUser', {
   userId: {
     type: Sequelize.INTEGER,
     allowNull: false
-  }
-}, {
+  },
+  isAdmin: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+  },
+},
+ {
   tableName: 'group_users',
   timestamps: true
 });
