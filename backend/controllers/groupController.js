@@ -222,6 +222,7 @@ const getGroupMembers = async (req, res) => {
       include: [
         {
           model: User,
+          as: 'user', // MUST match alias in belongsTo
           attributes: ['id', 'name', 'email'],
         },
       ],

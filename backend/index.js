@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
+require('./models'); // ✅ Load associations BEFORE using routes/controllers
 const sequelize = require('./config/databse');
 const signUpRoute = require('./routes/signUpRoute.js');
 const logInRoute = require('./routes/logInRoute.js');

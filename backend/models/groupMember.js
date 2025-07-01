@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../config/databse');
 
-const GroupUser = sequelize.define('GroupUser', {
+const GroupMember = sequelize.define('GroupMember', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -22,7 +22,8 @@ const GroupUser = sequelize.define('GroupUser', {
 },
  {
   tableName: 'group_users',
+  //  modelName: 'GroupMember', // ✅ important
   timestamps: true
 });
 
-module.exports = GroupUser;
+module.exports = GroupMember;

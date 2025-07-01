@@ -15,7 +15,7 @@ router.get('/users', authMiddleware, groupController.getAllUsers);
 
 
 //admin routes
-router.patch("/promote/:groupId/:userId", authMiddleware, groupController.promoteToAdmin);
+router.put("/promote/:groupId/:userId", authMiddleware, groupController.promoteToAdmin);
 router.delete("/remove/:groupId/:userId", authMiddleware, groupController.removeUserFromGroup);
 
 // ✅ 🔥 Add this new route:

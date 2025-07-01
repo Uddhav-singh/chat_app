@@ -27,9 +27,12 @@ User.belongsToMany(Group, {
 Message.belongsTo(Group, { foreignKey: 'groupId' });
 
 // ✅ Add this association (for eager loading to work in getGroupMembers)
+// GroupMember belongs to User
 GroupMember.belongsTo(User, {
   foreignKey: 'userId',
+  as: 'user' // <-- this alias is required!
 });
+// User has many GroupMembers
 User.hasMany(GroupMember, {
   foreignKey: 'userId',
 });
